@@ -6,21 +6,23 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Card } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
+import type { Profile } from "../../../types/profile";
 import { Button } from "../../../components/ui/button";
 import { Label } from "../../../components/ui/label";
 import { Textarea } from "../../../components/ui/textarea";
 import { profileSchema } from "../../../utils/validation";
 import React from "react";
 
+
 export default function EditProfilePage() {
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  const { data } = useQuery<Profile>({
     queryKey: ["profile"],
-    queryFn: () => axios.get("/api/profile").then(res => res.data)
+    queryFn: () => axios.get("/api/profile").then(res => res.data),
   });
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Profile>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: "",
@@ -30,20 +32,22 @@ export default function EditProfilePage() {
       bio: ""
     }
   });
+  
 
-  const mutation = useMutation({
-    mutationFn: (data) => axios.put("/api/profile", data),
+  const mutation = useMutation<unknown, unknown, Profile>({
+    mutationFn: (data: Profile) => axios.put("/api/profile", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       alert("✅ Profile updated successfully!");
-    }
+    },
   });
+  
 
   React.useEffect(() => {
     if (data) reset(data);
   }, [data, reset]);
 
-  const onSubmit = (data) => mutation.mutate(data);
+  const onSubmit = (data: Profile) => mutation.mutate(data);
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
