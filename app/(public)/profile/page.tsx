@@ -1,9 +1,15 @@
-import axios from "axios";
 import { Card } from "../../../components/ui/card";
 
 export default async function ProfilePage() {
-  const res = await axios.get("http://localhost:3000/api/profile");
-  const profile = res.data;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/profile`, {
+    cache: "no-store"
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch profile");
+  }
+
+  const profile = await res.json();
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
