@@ -1,9 +1,8 @@
 import { Card } from "../../../components/ui/card";
 
 export default async function ProfilePage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/profile`, {
-    cache: "no-store"
-  });
+  const res = await fetch("https://profile-viewer.app/api/profile");
+
 
   if (!res.ok) {
     throw new Error("Failed to fetch profile");
